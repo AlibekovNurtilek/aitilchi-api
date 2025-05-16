@@ -27,13 +27,13 @@ def fetch_tamga_data(word: str) -> Union[List[Dict], Dict]:
     url = f"https://tamgasoft.kg/morfo/ru/{word}"
     response = requests.get(url)
     if response.status_code != 200:
-        return {"error": f"Failed to fetch data for word: {word}"}
+        return [], {"error": f"Failed to fetch data for word: {word}"}
 
     soup = BeautifulSoup(response.text, "html.parser")
 
     # === 1. Проверка: найдено ли слово ===
     if soup.find("div", class_="alert-danger"):
-        return {}
+        return [], {"error": f"No morphological data found for word: {word}"}
     
     suggestions = []
     success_div = soup.find("div", class_="alert-success")
@@ -90,11 +90,6 @@ def fetch_tamga_data(word: str) -> Union[List[Dict], Dict]:
             description = first_element_copy.get_text(separator=" ", strip=True)
 
             info = f"{lemma}: {description}" if description else lemma
-
-        # Удаляем div#zat1
-        zat1 = tab_div.find("div", {"id": "zat1"})
-        if zat1:
-            zat1.decompose()
 
         blocks = []
         current_block = None

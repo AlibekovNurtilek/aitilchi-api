@@ -78,7 +78,7 @@ def predict_cases(req: WordRequest):
         # Шаг 7. Собираем полное слово
         full_word = rest_part + corrected_ending
         results[cases[i]] = full_word
-
+        suggestions = []
     # Шаг 8. Получаем внешнюю морфологическую информацию с сайта tamgasoft.kg
     try:
         suggestions, external_info = fetch_tamga_data(original_input)
